@@ -22,6 +22,7 @@ namespace BugTracker
                     options.IncludeXmlComments(xmlPath);
                 });
             builder.Services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
 
