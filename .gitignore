@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /BugTracker/Database.db
+/BugTracker/Database.db-shm
+/BugTracker/Database.db-wal
