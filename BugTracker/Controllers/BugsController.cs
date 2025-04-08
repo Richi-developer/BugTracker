@@ -21,6 +21,22 @@ namespace BugTracker.Controllers
             return Ok(db.Bugs.FindAsync(id));
         }
 
+
+        /// <summary>
+        /// Получение заголовков багов постранично 
+        /// </summary>
+        /// <param name="count">количество на странице, по-умолчанию 10</param>
+        /// <param name="skip">сколько страниц пропустить, по-умолчанию 0</param>
+        /// <returns></returns>
+        [HttpGet("list")]
+        public async Task<IActionResult> GetList(int count = 10, int skip = 0)
+        {
+            await using var db = new DatabaseContext();
+            var headers = db.Bugs.OrderBy(b => b.Id).Skip(skip * count).Take(count).Select(b=>new {b.Id, b.Name}).ToArray();
+            return Ok(headers);
+        }
+
+
         /// <summary>
         /// Создание нового бага
         /// </summary>
@@ -85,5 +101,8 @@ namespace BugTracker.Controllers
             await db.SaveChangesAsync();
             return Ok();
         }
+
+
+        
     }
 }
