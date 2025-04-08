@@ -1,4 +1,6 @@
 
+using BugTracker.Database;
+
 namespace BugTracker
 {
     public class Program
@@ -13,6 +15,7 @@ namespace BugTracker
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
 
@@ -29,7 +32,7 @@ namespace BugTracker
 
 
             app.MapControllers();
-
+            
             app.Run();
         }
     }
