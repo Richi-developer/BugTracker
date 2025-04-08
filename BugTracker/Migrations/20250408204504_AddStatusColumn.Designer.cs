@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTracker.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250408201225_AddStatusColumn")]
+    [Migration("20250408204504_AddStatusColumn")]
     partial class AddStatusColumn
     {
         /// <inheritdoc />

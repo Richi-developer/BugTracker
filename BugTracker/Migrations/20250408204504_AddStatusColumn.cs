@@ -10,25 +10,20 @@ namespace BugTracker.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
+            migrationBuilder.AddColumn<string>(
                 name: "Status",
                 table: "Bugs",
                 type: "TEXT",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "INTEGER");
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
+            migrationBuilder.DropColumn(
                 name: "Status",
-                table: "Bugs",
-                type: "INTEGER",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "TEXT");
+                table: "Bugs");
         }
     }
 }
