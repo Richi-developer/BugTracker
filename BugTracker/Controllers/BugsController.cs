@@ -102,7 +102,30 @@ namespace BugTracker.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Поиск заголовков багов постранично 
+        /// </summary>
+        /// <param name="nameOrDescriptionContains">Фраза для поиска в имени или описании бага</param>
+        /// <param name="authorContains">Фраза для поиска в имени автора бага</param>
+        /// <param name="count">количество на странице, по-умолчанию 10</param>
+        /// <param name="skip">сколько страниц пропустить, по-умолчанию 0</param>
+        /// <returns></returns>
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string? nameOrDescriptionContains = null, 
+            string? authorContains = null, 
+            int count = 10, int skip = 0)
+        {
+            await using var db = new DatabaseContext();
+            var bugsQuery = db.Bugs.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(nameOrDescriptionContains))
+                bugsQuery = bugsQuery.Where(b => b.Name.Contains(nameOrDescriptionContains));
+            if (!string.IsNullOrWhiteSpace(authorContains))
+                bugsQuery = bugsQuery.Where(b => b.Author != null && b.Author.Contains(authorContains));
+            var headers = bugsQuery
+                .Skip(skip * count).Take(count)
+                .Select(b => new { b.Id, b.Name }).ToArray();
+            return Ok(headers);
+        }
 
-        
     }
 }
