@@ -63,7 +63,7 @@ namespace BugTracker.Controllers
                 bugsQuery = bugsQuery.Where(b => b.Author != null && b.Author.Contains(authorContains));
             var headers = bugsQuery
                 .Skip(skip * count).Take(count)
-                .Select(b => new { b.Id, b.Name, b.Author })
+                .Select(b => new { b.Id, b.Status, b.Name, b.Author })
                 .AsNoTracking()
                 .ToArray();
             return Ok(headers);
@@ -118,6 +118,28 @@ namespace BugTracker.Controllers
         }
 
         /// <summary>
+        /// Обновление статуса бага
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> SetStatus(int id, string status)
+        {
+            var statusLowerCase = status.ToLower();
+            if (!BugStatuses.GetAllAvailableStatuses().Contains(statusLowerCase))
+                return BadRequest(
+                    $"Статус '{statusLowerCase}' не поддерживается, доступные значения: {string.Join(", ", BugStatuses.GetAllAvailableStatuses())}");
+            await using var db = new DatabaseContext();
+            var existingBug = await db.Bugs.FindAsync(id);
+            if (existingBug == null)
+                return BadRequest($"Нет бага с id:{id}");
+            existingBug.Status = statusLowerCase;
+            await db.SaveChangesAsync();
+            return Ok(existingBug);
+        }
+
+        /// <summary>
         /// Удаление бага
         /// </summary>
         /// <param name="id"></param>
@@ -131,7 +153,7 @@ namespace BugTracker.Controllers
                 return BadRequest($"Нет бага с id:{id}");
             var currentUser = Environment.UserName;
             if(string.Equals(currentUser, existingBug.Author))
-                return Forbid("Нельзя удалить баг, автором которого вы не являетесь");
+                return BadRequest("Нельзя удалить баг, автором которого вы не являетесь");
             db.Bugs.Remove(existingBug);
             await db.SaveChangesAsync();
             return Ok();

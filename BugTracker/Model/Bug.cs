@@ -20,5 +20,10 @@
         /// </summary>
         public string? Author { get; set; }
 
+        /// <summary>
+        /// Статус бага
+        /// </summary>
+        public string Status { get; set; } = BugStatuses.New;
+
     }
 }
