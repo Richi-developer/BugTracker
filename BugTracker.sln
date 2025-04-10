@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker.Core", "BugTrack
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker.Data", "BugTracker.Data\BugTracker.Data.csproj", "{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTrackerTests", "BugTrackerTests\BugTrackerTests.csproj", "{266CC285-DF0C-48C9-BA0D-9DAE88087B7D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{FAFBF40E-0E6E-4336-84C9-68A2569FFDDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,15 @@ Global
 		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{266CC285-DF0C-48C9-BA0D-9DAE88087B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{266CC285-DF0C-48C9-BA0D-9DAE88087B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{266CC285-DF0C-48C9-BA0D-9DAE88087B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{266CC285-DF0C-48C9-BA0D-9DAE88087B7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{266CC285-DF0C-48C9-BA0D-9DAE88087B7D} = {FAFBF40E-0E6E-4336-84C9-68A2569FFDDD}
 	EndGlobalSection
 EndGlobal

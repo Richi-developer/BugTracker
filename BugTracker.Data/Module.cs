@@ -10,8 +10,6 @@ namespace BugTracker.Data
         public static void AddBugTrackerDataServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
-            serviceCollection.AddDbContext<DatabaseContext>();
-
         }
 
 

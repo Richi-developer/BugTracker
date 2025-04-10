@@ -1,15 +1,24 @@
 ﻿using BugTracker.Data.Model;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace BugTracker.Data.Database
 {
     public class DatabaseContext:DbContext
     {
-        
+        public DatabaseContext()
+        {
+        }
+
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlite("Filename=Database.db");
+            if(!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlite("Filename=Database.db");
             
         }
 
