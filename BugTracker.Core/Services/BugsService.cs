@@ -7,6 +7,7 @@ using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BugTracker.Core.Requests;
+using BugTracker.Core.Validation;
 using BugTracker.Data.Database;
 using BugTracker.Data.Model;
 using BugTracker.Dto;
@@ -21,16 +22,23 @@ namespace BugTracker.Core.Services
         , IRequestHandler<UpdateBugRequest, Result<Bug>>
         , IRequestHandler<UpdateBugStatusRequest, Result<Bug>>
         , IRequestHandler<DeleteBugRequest, Result>
+        
 
     {
         private readonly IMapper _mapper;
         private readonly DatabaseContext _db;
+        private readonly BugDtoValidator _bugDtoValidator;
+        private readonly BugStatusValidator _bugStatusValidator;
 
         public BugsService(IMapper mapper
-        , DatabaseContext databaseContext)
+        , DatabaseContext databaseContext
+        , BugDtoValidator  bugDtoValidator
+        , BugStatusValidator  bugStatusValidator)
         {
             _mapper = mapper;
             _db = databaseContext;
+            _bugDtoValidator = bugDtoValidator;
+            _bugStatusValidator = bugStatusValidator;
         }
 
         /// <summary>
@@ -93,8 +101,9 @@ namespace BugTracker.Core.Services
         {
             try
             {
-                if (!Validate(request.BugDto, out var message))
-                    return Result.Error(message);
+                var validationResult = await _bugDtoValidator.ValidateAsync(request.BugDto, cancellationToken);
+                if (!validationResult.IsValid)
+                    return Result.Error(new ErrorList(validationResult.Errors.Select(e=>e.ErrorMessage)));
                 var bug = _mapper.Map<Bug>(request.BugDto);
                 await _db.Bugs.AddAsync(bug, cancellationToken);
                 await _db.SaveChangesAsync(cancellationToken);
@@ -104,17 +113,6 @@ namespace BugTracker.Core.Services
             {
                 return Result<Bug>.Error(e.Message);
             }
-        }
-
-        private bool Validate(BugDto bug, out string? message)
-        {
-            message = null;
-            if (string.IsNullOrEmpty(bug.Name))
-            {
-                message = "Наименование бага должно быть заполнено";
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -128,8 +126,9 @@ namespace BugTracker.Core.Services
         {
             try
             {
-                if (!Validate(request.BugDto, out var message))
-                    return Result.Error(message);
+                var validationResult = await _bugDtoValidator.ValidateAsync(request.BugDto, cancellationToken);
+                if (!validationResult.IsValid)
+                    return Result.Error(new ErrorList(validationResult.Errors.Select(e => e.ErrorMessage)));
                 var existingBug = await _db.Bugs.FindAsync(request.Id);
                 if (existingBug == null)
                     return Result.Error($"Нет бага с id:{request.Id}");
@@ -155,9 +154,9 @@ namespace BugTracker.Core.Services
         {
             try
             {
-                if (!BugStatuses.GetAllAvailableStatuses().Contains(request.BugStatusNormalized))
-                    return Result.Error(
-                        $"Статус '{request.BugStatus}' не поддерживается, доступные значения: {string.Join(", ", BugStatuses.GetAllAvailableStatuses())}");
+                var validationResult = await _bugStatusValidator.ValidateAsync(request.BugStatusNormalized);
+                if (!validationResult.IsValid)
+                    return Result.Error(new ErrorList(validationResult.Errors.Select(e => e.ErrorMessage)));
                 var existingBug = await _db.Bugs.FindAsync(request.Id);
                 if (existingBug == null)
                     return Result.Error($"Нет бага с id:{request.Id}");

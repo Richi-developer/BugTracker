@@ -5,6 +5,7 @@ using System.Reflection;
 using BugTracker.Data;
 using BugTracker.Core.AutoMapper;
 using BugTracker.Core.Services;
+using BugTracker.Core.Validation;
 using Microsoft.Extensions.Configuration;
 
 namespace BugTracker.Core
@@ -20,6 +21,8 @@ namespace BugTracker.Core
             serviceCollection.AddScoped<BugsService>();
             serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(thisAssembly));
 
+            serviceCollection.AddTransient<BugDtoValidator>();
+            serviceCollection.AddTransient<BugStatusValidator>();
         }
 
     }
