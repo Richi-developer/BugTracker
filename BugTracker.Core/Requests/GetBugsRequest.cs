@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ardalis.Result;
 using BugTracker.Data.Model;
 using MediatR;
 
 namespace BugTracker.Core.Requests
 {
-    public class GetBugsRequest : IRequest<BugHeader[]>
+    public class GetBugsRequest : IRequest<Result<BugHeader[]>>
     {
         public string? NameOrDescriptionContains { get; }
         public string? AuthorContains { get; }

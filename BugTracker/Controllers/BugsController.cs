@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Ardalis.Result.AspNetCore;
+using AutoMapper;
 using BugTracker.Core.Requests;
 using BugTracker.Data.Database;
 using BugTracker.Data.Model;
@@ -26,23 +27,25 @@ namespace BugTracker.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var bug = await _mediator.Send(new GetBugByIdRequest(id));
             return Ok(bug);
         }
-        
+
         /// <summary>
         /// Получение заголовков багов постранично 
         /// </summary>
         /// <param name="count">количество на странице, по-умолчанию 10</param>
         /// <param name="skip">сколько страниц пропустить, по-умолчанию 0</param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpGet("list")]
         public async Task<IActionResult> GetList(int count = 10, int skip = 0) 
             => await Search(count: count, skip: skip);
-        
+
         /// <summary>
         /// Поиск заголовков багов постранично 
         /// </summary>
@@ -51,6 +54,7 @@ namespace BugTracker.Controllers
         /// <param name="count">количество на странице, по-умолчанию 10</param>
         /// <param name="skip">сколько страниц пропустить, по-умолчанию 0</param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpGet("search")]
         public async Task<IActionResult> Search(string? nameOrDescriptionContains = null,
             string? authorContains = null,
@@ -64,6 +68,7 @@ namespace BugTracker.Controllers
         /// Создание нового бага
         /// </summary>
         /// <param name="bugDto"></param>
+        [TranslateResultToActionResult]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BugDto bugDto)
         {
@@ -77,6 +82,7 @@ namespace BugTracker.Controllers
         /// <param name="id"></param>
         /// <param name="bugDto"></param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BugDto bugDto)
         {
@@ -90,6 +96,7 @@ namespace BugTracker.Controllers
         /// <param name="id"></param>
         /// <param name="status"></param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpPut("{id}/status")]
         public async Task<IActionResult> SetStatus(int id, string status)
         {
@@ -102,6 +109,7 @@ namespace BugTracker.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [TranslateResultToActionResult]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
