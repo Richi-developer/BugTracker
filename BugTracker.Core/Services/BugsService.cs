@@ -94,7 +94,7 @@ namespace BugTracker.Core.Services
             try
             {
                 if (!Validate(request.BugDto, out var message))
-                    throw new Exception(message);
+                    return Result.Error(message);
                 var bug = _mapper.Map<Bug>(request.BugDto);
                 await _db.Bugs.AddAsync(bug, cancellationToken);
                 await _db.SaveChangesAsync(cancellationToken);
@@ -129,10 +129,10 @@ namespace BugTracker.Core.Services
             try
             {
                 if (!Validate(request.BugDto, out var message))
-                    throw new Exception(message);
+                    return Result.Error(message);
                 var existingBug = await _db.Bugs.FindAsync(request.Id);
                 if (existingBug == null)
-                    throw new Exception($"Нет бага с id:{request.Id}");
+                    return Result.Error($"Нет бага с id:{request.Id}");
                 existingBug.Name = request.BugDto.Name;
                 existingBug.Description = request.BugDto.Description;
                 await _db.SaveChangesAsync(cancellationToken);
@@ -156,11 +156,11 @@ namespace BugTracker.Core.Services
             try
             {
                 if (!BugStatuses.GetAllAvailableStatuses().Contains(request.BugStatusNormalized))
-                    throw new Exception(
+                    return Result.Error(
                         $"Статус '{request.BugStatus}' не поддерживается, доступные значения: {string.Join(", ", BugStatuses.GetAllAvailableStatuses())}");
                 var existingBug = await _db.Bugs.FindAsync(request.Id);
                 if (existingBug == null)
-                    throw new Exception($"Нет бага с id:{request.Id}");
+                    return Result.Error($"Нет бага с id:{request.Id}");
                 existingBug.Status = request.BugStatusNormalized;
                 await _db.SaveChangesAsync(cancellationToken);
                 return Result<Bug>.Success(existingBug);
@@ -184,10 +184,10 @@ namespace BugTracker.Core.Services
             {
                 var existingBug = await _db.Bugs.FindAsync(request.Id);
                 if (existingBug == null)
-                    throw new Exception($"Нет бага с id:{request.Id}");
+                    return Result.Error($"Нет бага с id:{request.Id}");
                 var currentUser = Environment.UserName;
                 if (string.Equals(currentUser, existingBug.Author))
-                    throw new Exception("Нельзя удалить баг, автором которого вы не являетесь");
+                    return Result.Error("Нельзя удалить баг, автором которого вы не являетесь");
                 _db.Bugs.Remove(existingBug);
                 await _db.SaveChangesAsync(cancellationToken);
                 return Result.Success();
