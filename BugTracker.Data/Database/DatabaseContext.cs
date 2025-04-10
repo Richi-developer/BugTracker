@@ -5,17 +5,7 @@ namespace BugTracker.Data.Database
 {
     public class DatabaseContext:DbContext
     {
-        private static bool _created = false;
-
-        public DatabaseContext()
-        {
-            if(_created)
-                return;
-            Database.EnsureCreated();
-            _created = true;
-
-        }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
