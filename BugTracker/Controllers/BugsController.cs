@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using BugTracker.Core.Requests;
 using BugTracker.Data.Database;
 using BugTracker.Data.Model;
 using BugTracker.Dto;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +14,11 @@ namespace BugTracker.Controllers
     [ApiController]
     public class BugsController : ControllerBase
     {
-        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public BugsController(IMapper mapper)
+        public BugsController(IMediator mediator)
         {
-            _mapper = mapper;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -27,11 +29,10 @@ namespace BugTracker.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            await using var db = new DatabaseContext();
-            return Ok(db.Bugs.FindAsync(id));
+            var bug = await _mediator.Send(new GetBugByIdRequest(id));
+            return Ok(bug);
         }
-
-
+        
         /// <summary>
         /// Получение заголовков багов постранично 
         /// </summary>
@@ -55,17 +56,7 @@ namespace BugTracker.Controllers
             string? authorContains = null,
             int count = 10, int skip = 0)
         {
-            await using var db = new DatabaseContext();
-            var bugsQuery = db.Bugs.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(nameOrDescriptionContains))
-                bugsQuery = bugsQuery.Where(b => b.Name.Contains(nameOrDescriptionContains));
-            if (!string.IsNullOrWhiteSpace(authorContains))
-                bugsQuery = bugsQuery.Where(b => b.Author != null && b.Author.Contains(authorContains));
-            var headers = bugsQuery
-                .Skip(skip * count).Take(count)
-                .Select(b => new { b.Id, b.Status, b.Name, b.Author })
-                .AsNoTracking()
-                .ToArray();
+            var headers = await _mediator.Send(new GetBugsRequest(nameOrDescriptionContains, authorContains, skip, count));
             return Ok(headers);
         }
 
@@ -76,24 +67,8 @@ namespace BugTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BugDto bugDto)
         {
-            if (!Validate(bugDto, out var message))
-                return BadRequest(message);
-            var bug = _mapper.Map<Bug>(bugDto);
-            await using var db = new DatabaseContext();
-            await db.Bugs.AddAsync(bug);
-            await db.SaveChangesAsync();
+            var bug = await _mediator.Send(new CreateBugRequest(bugDto));
             return Ok(bug);
-        }
-
-        private bool Validate(BugDto bug, out string? message)
-        {
-            message = null;
-            if (string.IsNullOrEmpty(bug.Name))
-            {
-                message = "Наименование бага должно быть заполнено";
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -105,16 +80,8 @@ namespace BugTracker.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BugDto bugDto)
         {
-            if(!Validate(bugDto, out var message))
-                return BadRequest(message);
-            await using var db = new DatabaseContext();
-            var existingBug = await db.Bugs.FindAsync(id);
-            if (existingBug == null)
-                return BadRequest($"Нет бага с id:{id}");
-            existingBug.Name = bugDto.Name;
-            existingBug.Description = bugDto.Description;
-            await db.SaveChangesAsync();
-            return Ok(existingBug);
+            var bug = await _mediator.Send(new UpdateBugRequest(id, bugDto));
+            return Ok(bug);
         }
 
         /// <summary>
@@ -126,17 +93,8 @@ namespace BugTracker.Controllers
         [HttpPut("{id}/status")]
         public async Task<IActionResult> SetStatus(int id, string status)
         {
-            var statusLowerCase = status.ToLower();
-            if (!BugStatuses.GetAllAvailableStatuses().Contains(statusLowerCase))
-                return BadRequest(
-                    $"Статус '{statusLowerCase}' не поддерживается, доступные значения: {string.Join(", ", BugStatuses.GetAllAvailableStatuses())}");
-            await using var db = new DatabaseContext();
-            var existingBug = await db.Bugs.FindAsync(id);
-            if (existingBug == null)
-                return BadRequest($"Нет бага с id:{id}");
-            existingBug.Status = statusLowerCase;
-            await db.SaveChangesAsync();
-            return Ok(existingBug);
+            var bug = await _mediator.Send(new UpdateBugStatusRequest(id, status));
+            return Ok(bug);
         }
 
         /// <summary>
@@ -147,19 +105,8 @@ namespace BugTracker.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await using var db = new DatabaseContext();
-            var existingBug = await db.Bugs.FindAsync(id);
-            if (existingBug == null)
-                return BadRequest($"Нет бага с id:{id}");
-            var currentUser = Environment.UserName;
-            if(string.Equals(currentUser, existingBug.Author))
-                return BadRequest("Нельзя удалить баг, автором которого вы не являетесь");
-            db.Bugs.Remove(existingBug);
-            await db.SaveChangesAsync();
+            
             return Ok();
         }
-
-        
-
     }
 }

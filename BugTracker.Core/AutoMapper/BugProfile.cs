@@ -12,6 +12,7 @@ namespace BugTracker.Core.AutoMapper
         {
             CreateMap<BugDto, Bug>()
                 .ForMember(bug => bug.Author, expression => expression.MapFrom(dto => Environment.UserName));
+            CreateMap<Bug, BugHeader>();
         }
     }
 }

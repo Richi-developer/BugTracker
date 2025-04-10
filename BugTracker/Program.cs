@@ -1,6 +1,8 @@
 using BugTracker.Data.Database;
 using BugTracker.Data.Model;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using BugTracker.Core;
 
 namespace BugTracker
 {
@@ -21,8 +23,13 @@ namespace BugTracker
                     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                     options.IncludeXmlComments(xmlPath);
                 });
-            
-            
+            builder.Services.AddMediatR(configuration =>
+            {
+                configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            });
+
+            builder.Services.AddBugTrackerCoreServices();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
