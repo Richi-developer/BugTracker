@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker", "BugTracker\BugTracker.csproj", "{EA6387DA-9633-474D-A685-922953D59EFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker.Core", "BugTracker.Core\BugTracker.Core.csproj", "{46B5A69F-4816-4809-8E01-8DDBC632369C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker.Data", "BugTracker.Data\BugTracker.Data.csproj", "{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{EA6387DA-9633-474D-A685-922953D59EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA6387DA-9633-474D-A685-922953D59EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA6387DA-9633-474D-A685-922953D59EFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46B5A69F-4816-4809-8E01-8DDBC632369C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B5A69F-4816-4809-8E01-8DDBC632369C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B5A69F-4816-4809-8E01-8DDBC632369C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B5A69F-4816-4809-8E01-8DDBC632369C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE8A6E8D-B3CC-42D8-8D10-6F34690D72E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,6 @@
-
-using BugTracker.Database;
+using BugTracker.Data.Database;
+using BugTracker.Data.Model;
 using System.Reflection;
-using BugTracker.Model;
 
 namespace BugTracker
 {
@@ -22,9 +21,8 @@ namespace BugTracker
                     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                     options.IncludeXmlComments(xmlPath);
                 });
-            builder.Services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
+            
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -42,19 +40,10 @@ namespace BugTracker
 
             app.MapControllers();
 
-
-            using var db = new DatabaseContext();
-            {
-                if (db.Database.EnsureCreated())
-                {
-                    db.Bugs.Add(new Bug() { Name = "Bug1", Description = "Не работает запись в чакру", Author = "Вася" });
-                    db.Bugs.Add(new Bug() { Name = "Bug2", Description = "Не работает чтение из конденсатора потока", Author = "Петя", Status = BugStatuses.Fixed });
-                    db.Bugs.Add(new Bug() { Name = "Bug3", Description = "Слишком мощные девиации", Author = "Лола", Status = BugStatuses.Closed });
-                    db.SaveChanges();
-                }
-            }
+            BugTracker.Data.Module.PopulateSampleData();
             
             app.Run();
+
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using BugTracker.Database;
+using BugTracker.Data.Database;
+using BugTracker.Data.Model;
 using BugTracker.Dto;
-using BugTracker.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,8 +1,10 @@
-﻿using AutoMapper;
-using BugTracker.Dto;
-using BugTracker.Model;
+﻿
 
-namespace BugTracker.AutoMapper
+using AutoMapper;
+using BugTracker.Data.Model;
+using BugTracker.Dto;
+
+namespace BugTracker.Core.AutoMapper
 {
     public class BugProfile: Profile
     {
